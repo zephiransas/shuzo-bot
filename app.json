@@ -1,0 +1,20 @@
+{
+  "name": "Shuzo Bot for Slack",
+  "description": "Shuzo Bot for Slack",
+  "repository": "https://github.com/mako_wis/shuzo-bot",
+  "env": {
+    "SLACKBOTTOKEN": {
+      "description": "API Token for Slack Bot",
+      "required": true
+    },
+    "RTMURL": {
+      "description": "Slack Real Time Messaging API(No need to change)",
+      "value": "https://slack.com/api/rtm.start?token={token}&simple_latest&no_unreads",
+      "required": true
+    }
+  },
+  "addons": [
+    "cleardb:ignite"
+  ],
+  "keywords": ["java"]
+}
