@@ -5,6 +5,8 @@ import org.springframework.jdbc.core.JdbcTemplate;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
 
 public class V3_1__insert_word_positive_negative implements SpringJdbcMigration {
 
@@ -15,19 +17,19 @@ public class V3_1__insert_word_positive_negative implements SpringJdbcMigration 
                 new InputStreamReader(getClass().getClassLoader().getResourceAsStream("db/migration/seed/pn.csv.m3.120408.trim")))) {
 
             String str;
+            List<Object[]> batchArgs = new ArrayList<>();
+
             while ((str = br.readLine()) != null) {
                 String[] split = str.split("\t"); // タブで分割
                 if (split.length > 1) {
-                    String sql = "REPLACE INTO WordPositiveNegative(word, score) VALUES (?,?)";
-
                     String emotion = split[1].trim(); // p or e or n
-                    if (emotion.equals("p")) {
-                        jdbcTemplate.update(sql,split[0].trim(),1);
-                    } else if (emotion.equals("n")) {
-                        jdbcTemplate.update(sql,split[0].trim(),-1);
-                    }
+                    batchArgs.add(new Object[]{
+                            split[0].trim(),
+                            emotion.equals("p") ? 1 : -1});
                 }
             }
+            String sql = "REPLACE INTO WordPositiveNegative(word, score) VALUES (?,?)";
+            jdbcTemplate.batchUpdate(sql, batchArgs);
         }
     }
 }
